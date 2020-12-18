@@ -15,26 +15,25 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class EmployeeFragment : Fragment() {
+
+class EmployeeFragment : Fragment(), CRUDFunctionality<Employee> {
 
     private lateinit var binding: FragmentHostBinding
+    private var updatedId: Int = -1
     private val database by lazy {
         TaskDatabase.invoke(requireContext())
     }
     private val adapterEmp by lazy {
-        EmployeeAdapter {
-            CoroutineScope(Dispatchers.IO).launch {
-                database.getEmployeeDao().remove(it)
-            }
-        }
+        EmployeeAdapter(
+            { remove(it) },
+            { edit(it) }
+        )
     }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         val view = inflater.inflate(R.layout.fragment_host, container, false)
         binding = FragmentHostBinding.bind(view)
         return view
@@ -44,29 +43,24 @@ class EmployeeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        observe()
+        observeData()
     }
-
 
     private fun initViews() {
 
         binding.etCompanyId.visibility = View.VISIBLE
-
-
-        binding.etInput.hint = "Insert employee"
-
-
-        binding.btnAdd.setOnClickListener { add() }
+        binding.etInput.hint = "Insert Employee"
+        binding.etCompanyId.hint = "Insert company Id"
+        binding.btnAdd.text = "add"
+        binding.btnAdd.setOnClickListener { confirm() }
 
         binding.recycler.apply {
             setHasFixedSize(true)
             this.adapter = adapterEmp
         }
-
     }
 
-    private fun add() {
-
+    private fun confirm() {
         val name = binding.etInput.text.toString()
         val cId = binding.etCompanyId.text.toString()
         if (name.trim().isEmpty()) {
@@ -77,21 +71,50 @@ class EmployeeFragment : Fragment() {
             Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
             return
         }
-        val id = try {
+        val companyId = try {
             cId.toInt()
         } catch (ex: Exception) {
             Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
             return
         }
+        if (updatedId != -1) update(Employee(name, companyId).apply { this.id = updatedId })
+        else add(Employee(name, companyId))
+
+        binding.etCompanyId.text.clear()
+        binding.etInput.text.clear()
+    }
+
+    private fun edit(employee: Employee) {
+        binding.etInput.setText(employee.fullName)
+        binding.etCompanyId.setText(employee.cId.toString())
+        updatedId = employee.id
+        binding.btnAdd.text = "Update"
+    }
+
+    override fun add(item: Employee) {
         CoroutineScope(Dispatchers.IO).launch {
-            database.getEmployeeDao().add(Employee(name, id))
+            database.getEmployeeDao().add(item)
         }
     }
 
-    private fun observe() {
-        database.getEmployeeDao().getAll().observe(viewLifecycleOwner, {
+    override fun update(item: Employee) {
+        CoroutineScope(Dispatchers.IO).launch {
+            database.getEmployeeDao().update(item)
+        }
+        updatedId = -1
+        binding.btnAdd.text = "Add"
+    }
+
+    override fun remove(item: Employee) {
+        CoroutineScope(Dispatchers.IO).launch {
+            database.getEmployeeDao().remove(item)
+        }
+    }
+
+    override fun observeData() {
+        database.getEmployeeDao().getAll().observe(viewLifecycleOwner) {
             adapterEmp.setEmployeeList(it)
-        })
+        }
     }
 
 }

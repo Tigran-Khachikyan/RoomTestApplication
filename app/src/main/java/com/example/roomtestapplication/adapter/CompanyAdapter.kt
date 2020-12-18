@@ -9,7 +9,8 @@ import com.example.roomtestapplication.databinding.HolderCompanyBinding
 import com.example.roomtestapplication.models.Company
 
 class CompanyAdapter(
-    private val remove: (Company) -> Unit
+    private val remove: (Company) -> Unit,
+    private val edit: (Company) -> Unit
 ) :
     RecyclerView.Adapter<CompanyAdapter.Holder>() {
 
@@ -27,6 +28,7 @@ class CompanyAdapter(
             binding.tvCompany.text = company.name
             binding.tvId.text = company.id.toString()
             binding.icTrash.setOnClickListener { companies?.run { remove.invoke(get(layoutPosition)) } }
+            binding.root.setOnClickListener { companies?.run { edit.invoke(get(layoutPosition)) } }
         }
     }
 

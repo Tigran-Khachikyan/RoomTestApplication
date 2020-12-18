@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
             parentColumns = ["ID"],
             childColumns = ["COMPANY_ID"],
             onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.RESTRICT,
+            onUpdate = ForeignKey.CASCADE,
             deferred = false
         )
     ]
@@ -22,7 +22,8 @@ data class Employee(
 
     @ColumnInfo(name = "FULL_NAME")
     val fullName: String,
-    @ColumnInfo(name = "COMPANY_ID") val cId: Int
+    @ColumnInfo(name = "COMPANY_ID")
+    val cId: Int
 ){
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")

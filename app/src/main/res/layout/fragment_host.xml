@@ -13,8 +13,6 @@
         android:layout_height="match_parent"
         tools:context=".fragments.EmployeeFragment">
 
-
-
         <EditText
             android:background="@drawable/back_holder"
             android:id="@+id/et_input"
@@ -44,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_margin="8dp"
             android:layout_height="64dp"
-            android:text="ADD COMPANY"
+            android:text="ADD"
             app:layout_constraintTop_toBottomOf="@id/et_company_id" />
 
         <androidx.recyclerview.widget.RecyclerView

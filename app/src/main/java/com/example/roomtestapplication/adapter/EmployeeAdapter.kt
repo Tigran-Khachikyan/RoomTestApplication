@@ -5,13 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomtestapplication.R
-import com.example.roomtestapplication.databinding.HolderCompanyBinding
 import com.example.roomtestapplication.databinding.HolderEmployeeBinding
-import com.example.roomtestapplication.models.Company
+import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.models.Employee
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EmployeeAdapter(
-    private val remove: (Employee) -> Unit
+    private val remove: (Employee) -> Unit,
+    private val edit: (Employee) -> Unit
 ) :
     RecyclerView.Adapter<EmployeeAdapter.Holder>() {
 
@@ -28,8 +32,15 @@ class EmployeeAdapter(
         fun bind(employee: Employee) {
             binding.tvEmployee.text = employee.fullName
             binding.tvId.text = employee.id.toString()
-            binding.tvCompany.text = employee.cId.toString()
+            CoroutineScope(Dispatchers.IO).launch {
+                val name = TaskDatabase.invoke(itemView.context).getEmployeeDao().getCompanyName(employee.cId)
+                withContext(Dispatchers.Main) {
+                    val displayName = employee.cId.toString() + " - "+name
+                    binding.tvCompany.text = displayName
+                }
+            }
             binding.icTrash.setOnClickListener { employees?.run { remove.invoke(get(layoutPosition)) } }
+            binding.root.setOnClickListener { employees?.run { edit.invoke(get(layoutPosition)) } }
         }
     }
 

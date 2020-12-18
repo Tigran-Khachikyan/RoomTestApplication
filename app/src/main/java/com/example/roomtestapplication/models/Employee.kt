@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
     tableName = "EMPLOYEE",
     foreignKeys = [
         ForeignKey(
-            entity = Employee::class,
+            entity = Company::class,
             parentColumns = ["ID"],
             childColumns = ["COMPANY_ID"],
             onDelete = ForeignKey.CASCADE,

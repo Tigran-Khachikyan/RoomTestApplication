@@ -28,7 +28,7 @@ class EmployeeAdapter(
         fun bind(employee: Employee) {
             binding.tvEmployee.text = employee.fullName
             binding.tvId.text = employee.id.toString()
-            binding.tvCompany.text = employee.id.toString()
+            binding.tvCompany.text = employee.cId.toString()
             binding.icTrash.setOnClickListener { employees?.run { remove.invoke(get(layoutPosition)) } }
         }
     }

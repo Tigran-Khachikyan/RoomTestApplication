@@ -13,25 +13,25 @@
         android:layout_height="match_parent"
         tools:context=".fragments.EmployeeFragment">
 
+
+
         <EditText
+            android:background="@drawable/back_holder"
             android:id="@+id/et_input"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@android:color/holo_green_light"
             android:gravity="center"
-            android:hint="Company Name"
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:background="@drawable/back_holder"
             android:id="@+id/et_company_id"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@android:color/holo_green_light"
             android:gravity="center"
-            android:hint="Company ID"
             android:layout_marginTop="2dp"
             android:textColor="@android:color/black"
             android:inputType="number"
@@ -42,12 +42,14 @@
         <Button
             android:id="@+id/btnAdd"
             android:layout_width="match_parent"
+            android:layout_margin="8dp"
             android:layout_height="64dp"
             android:text="ADD COMPANY"
             app:layout_constraintTop_toBottomOf="@id/et_company_id" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"

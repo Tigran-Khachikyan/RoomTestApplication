@@ -26,7 +26,7 @@ class EmployeeAdapter(
 
         private val binding = HolderEmployeeBinding.bind(itemView)
         fun bind(employee: Employee) {
-            binding.tvCompany.text = employee.fullName
+            binding.tvEmployee.text = employee.fullName
             binding.tvId.text = employee.id.toString()
             binding.tvCompany.text = employee.id.toString()
             binding.icTrash.setOnClickListener { employees?.run { remove.invoke(get(layoutPosition)) } }

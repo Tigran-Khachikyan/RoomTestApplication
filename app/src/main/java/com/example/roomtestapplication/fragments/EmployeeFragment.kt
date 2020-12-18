@@ -86,7 +86,6 @@ class EmployeeFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             database.getEmployeeDao().add(Employee(name, id))
         }
-
     }
 
     private fun observe() {

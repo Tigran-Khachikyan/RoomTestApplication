@@ -20,10 +20,8 @@ interface EmployeeDao {
     @Query("SELECT NAME FROM COMPANY WHERE COMPANY.ID = :cId")
     suspend fun getCompanyName(cId: Int): String?
 
-    /*  "SELECT CUSTOMER.CUSTID, CUSTOMER.NAME FROM CUSTOMER JOIN \n" +
-      "> INVOICE ON CUSTOMER.CUSTID = INVOICE.CUSTID\n" +
-      "> WHERE (INVOICE.DATE between '2018/08/01' and '2018/08/31'AND \n" +
-      "> INVOICE.AMOUNT>20000 "*/
+    @Query("SELECT NAME FROM DEPARTMENT WHERE DEPARTMENT.ID = :dId")
+    suspend fun getDepartmentName(dId: Int): String?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(employee: Employee)

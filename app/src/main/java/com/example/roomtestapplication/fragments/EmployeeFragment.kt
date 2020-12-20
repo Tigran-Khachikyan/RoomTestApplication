@@ -14,8 +14,10 @@ class EmployeeFragment : GenericFragment<Employee>() {
 
     override fun initialize() {
         binding.etCompanyId.visibility = View.VISIBLE
+        binding.etDepId.visibility = View.VISIBLE
         binding.etInput.hint = "Insert Employee"
         binding.etCompanyId.hint = "Insert company Id"
+        binding.etDepId.hint = "Insert department Id"
         binding.btnAdd.text = "add"
         binding.btnAdd.setOnClickListener { confirmChanges() }
 
@@ -28,6 +30,7 @@ class EmployeeFragment : GenericFragment<Employee>() {
     override fun edit(item: Employee) {
         binding.etInput.setText(item.fullName)
         binding.etCompanyId.setText(item.cId.toString())
+        binding.etDepId.setText(item.dId.toString())
         updatedId = item.id
         binding.btnAdd.text = "Update"
     }
@@ -35,6 +38,7 @@ class EmployeeFragment : GenericFragment<Employee>() {
     override fun confirmChanges() {
         val name = binding.etInput.text.toString()
         val cId = binding.etCompanyId.text.toString()
+        val dId = binding.etDepId.text.toString()
         if (name.trim().isEmpty()) {
             Toast.makeText(requireContext(), "No name", Toast.LENGTH_SHORT).show()
             return
@@ -43,16 +47,27 @@ class EmployeeFragment : GenericFragment<Employee>() {
             Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
             return
         }
+        if (dId.trim().isEmpty()) {
+            Toast.makeText(requireContext(), "wrong dep Id", Toast.LENGTH_SHORT).show()
+            return
+        }
         val companyId = try {
             cId.toInt()
         } catch (ex: Exception) {
             Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
             return
         }
-        if (isUpdating()) update(Employee(name, companyId).apply { this.id = updatedId })
-        else add(Employee(name, companyId))
+        val depId = try {
+            dId.toInt()
+        } catch (ex: Exception) {
+            Toast.makeText(requireContext(), "wrong dep Id", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (isUpdating()) update(Employee(name, companyId, depId).apply { this.id = updatedId })
+        else add(Employee(name, companyId, depId))
 
         binding.etCompanyId.text.clear()
+        binding.etDepId.text.clear()
         binding.etInput.text.clear()
     }
 

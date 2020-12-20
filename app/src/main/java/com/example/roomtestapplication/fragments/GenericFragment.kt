@@ -37,6 +37,10 @@ abstract class GenericFragment<T : GenericType> : Fragment() {
 
         initialize()
         observeData()
+        binding.swipeRefresh.setOnRefreshListener {
+            adapterGeneric.notifyDataSetChanged()
+            binding.swipeRefresh.isRefreshing = false
+        }
     }
 
     protected fun isUpdating(): Boolean = updatedId != -1

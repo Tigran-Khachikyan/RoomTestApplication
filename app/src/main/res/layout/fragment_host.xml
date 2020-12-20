@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -13,11 +13,12 @@
         android:layout_height="match_parent"
         tools:context=".fragments.EmployeeFragment">
 
+
         <EditText
-            android:background="@drawable/back_holder"
             android:id="@+id/et_input"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:background="@drawable/back_holder"
             android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="24sp"
@@ -25,36 +26,57 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:background="@drawable/back_holder"
-            android:id="@+id/et_company_id"
+            android:id="@+id/et_dep_Id"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:gravity="center"
             android:layout_marginTop="2dp"
-            android:textColor="@android:color/black"
+            android:background="@drawable/back_holder"
+            android:gravity="center"
             android:inputType="number"
+            android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/et_input" />
 
+        <EditText
+            android:id="@+id/et_company_id"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/back_holder"
+            android:gravity="center"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/et_dep_Id" />
+
         <Button
             android:id="@+id/btnAdd"
             android:layout_width="match_parent"
-            android:layout_margin="8dp"
             android:layout_height="64dp"
+            android:layout_margin="8dp"
             android:text="ADD"
             app:layout_constraintTop_toBottomOf="@id/et_company_id" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
-            android:layout_marginTop="8dp"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnAdd"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
-            tools:listitem="@layout/holder_company" />
+            app:layout_constraintTop_toBottomOf="@id/btnAdd">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+                tools:listitem="@layout/holder_generic" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

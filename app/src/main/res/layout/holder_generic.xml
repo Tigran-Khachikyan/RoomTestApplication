@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="90dp"
         android:background="@drawable/back_holder"
         android:layout_margin="4dp">
 
@@ -23,28 +23,43 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:textStyle="bold"
+            android:text="5"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:gravity="center" />
 
         <TextView
-            android:id="@+id/tv_employee"
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tv_company"
+            app:layout_constraintBottom_toTopOf="@id/tv_dep"
             android:textStyle="bold"
+            android:text="Tigran"
             android:textColor="@android:color/black"
             android:textSize="24sp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tv_dep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintBottom_toTopOf="@id/tv_company"
+            android:textStyle="italic"
+            android:text="Development"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
             android:gravity="center" />
 
         <TextView
             android:id="@+id/tv_company"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_employee"
+            app:layout_constraintTop_toBottomOf="@id/tv_dep"
             app:layout_constraintBottom_toBottomOf="parent"
             android:textStyle="italic"
+            android:text="Drincon"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
             android:gravity="center" />

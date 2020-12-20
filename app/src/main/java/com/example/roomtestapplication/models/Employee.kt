@@ -24,7 +24,7 @@ data class Employee(
     val fullName: String,
     @ColumnInfo(name = "COMPANY_ID")
     val cId: Int
-){
+) : GenericType {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id: Int = 0

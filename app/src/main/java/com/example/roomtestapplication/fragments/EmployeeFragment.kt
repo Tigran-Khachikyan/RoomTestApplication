@@ -1,66 +1,38 @@
 package com.example.roomtestapplication.fragments
 
-import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import com.example.roomtestapplication.R
-import com.example.roomtestapplication.adapter.EmployeeAdapter
-import com.example.roomtestapplication.databinding.FragmentHostBinding
-import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.models.Employee
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class EmployeeFragment : Fragment(), CRUDFunctionality<Employee> {
+class EmployeeFragment : GenericFragment<Employee>() {
 
-    private lateinit var binding: FragmentHostBinding
-    private var updatedId: Int = -1
-    private val database by lazy {
-        TaskDatabase.invoke(requireContext())
-    }
-    private val adapterEmp by lazy {
-        EmployeeAdapter(
-            { remove(it) },
-            { edit(it) }
-        )
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-
-        val view = inflater.inflate(R.layout.fragment_host, container, false)
-        binding = FragmentHostBinding.bind(view)
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initViews()
-        observeData()
-    }
-
-    private fun initViews() {
-
+    override fun initialize() {
         binding.etCompanyId.visibility = View.VISIBLE
         binding.etInput.hint = "Insert Employee"
         binding.etCompanyId.hint = "Insert company Id"
         binding.btnAdd.text = "add"
-        binding.btnAdd.setOnClickListener { confirm() }
+        binding.btnAdd.setOnClickListener { confirmChanges() }
 
         binding.recycler.apply {
             setHasFixedSize(true)
-            this.adapter = adapterEmp
+            this.adapter = adapterGeneric
         }
     }
 
-    private fun confirm() {
+    override fun edit(item: Employee) {
+        binding.etInput.setText(item.fullName)
+        binding.etCompanyId.setText(item.cId.toString())
+        updatedId = item.id
+        binding.btnAdd.text = "Update"
+    }
+
+    override fun confirmChanges() {
         val name = binding.etInput.text.toString()
         val cId = binding.etCompanyId.text.toString()
         if (name.trim().isEmpty()) {
@@ -84,11 +56,10 @@ class EmployeeFragment : Fragment(), CRUDFunctionality<Employee> {
         binding.etInput.text.clear()
     }
 
-    private fun edit(employee: Employee) {
-        binding.etInput.setText(employee.fullName)
-        binding.etCompanyId.setText(employee.cId.toString())
-        updatedId = employee.id
-        binding.btnAdd.text = "Update"
+    override fun observeData() {
+        database.getEmployeeDao().getAll().observe(viewLifecycleOwner) {
+            adapterGeneric.setData(it)
+        }
     }
 
     override fun add(item: Employee) {
@@ -101,19 +72,15 @@ class EmployeeFragment : Fragment(), CRUDFunctionality<Employee> {
         CoroutineScope(Dispatchers.IO).launch {
             database.getEmployeeDao().update(item)
         }
-        updatedId = -1
-        binding.btnAdd.text = "Add"
     }
 
     override fun remove(item: Employee) {
         CoroutineScope(Dispatchers.IO).launch {
-            database.getEmployeeDao().remove(item)
-        }
-    }
-
-    override fun observeData() {
-        database.getEmployeeDao().getAll().observe(viewLifecycleOwner) {
-            adapterEmp.setEmployeeList(it)
+            try {
+                database.getEmployeeDao().remove(item)
+            } catch (ex: Exception) {
+                Log.d("yayyyys55", "Employee removing exception: " + ex.message)
+            }
         }
     }
 

@@ -6,22 +6,11 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.*
 import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "COMPANY",
-/*    foreignKeys = [
-        ForeignKey(
-            entity = Employee::class,
-            parentColumns = ["ID"],
-            childColumns = ["COMPANY_ID"],
-            onDelete = CASCADE,
-            onUpdate = RESTRICT,
-            deferred = false
-        )
-    ]*/
-)
+@Entity(tableName = "COMPANY")
 data class Company(
-    @ColumnInfo(name = "NAME") val name: String
-){
+    @ColumnInfo(name = "NAME")
+    val name: String
+) : GenericType {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "ID")
     var id: Int = 0

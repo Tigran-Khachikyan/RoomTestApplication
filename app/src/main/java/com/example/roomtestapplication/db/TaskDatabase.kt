@@ -3,8 +3,6 @@ package com.example.roomtestapplication.db
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.roomtestapplication.models.Company
 import com.example.roomtestapplication.models.Department
 import com.example.roomtestapplication.models.Employee
@@ -26,7 +24,7 @@ abstract class TaskDatabase : RoomDatabase() {
 /*        val migration_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Create the new table
-                database.execSQL("CREATE TABLE DEPARTMENT (NAME TEXT, ID INTEGER PRIMARY KEY AUTOFENERATED)")
+                database.execSQL("CREATE TABLE DEPARTMENT (NAME TEXT, ID INTEGER PRIMARY KEY)")
                 // Copy the data
                 database.execSQL("INSERT INTO users_new (userid, username, last_update) SELECT userid, username, last_update FROM users")
                 // Remove the old table

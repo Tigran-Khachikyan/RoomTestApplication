@@ -17,6 +17,9 @@ interface EmployeeDao {
     @Query("SELECT * FROM EMPLOYEE WHERE COMPANY_ID =:companyId")
     suspend fun getCompanyEmployees(companyId: Int): List<Employee>?
 
+    @Query("SELECT * FROM EMPLOYEE WHERE DEP_ID =:depId")
+    suspend fun getDepartmentEmployees(depId: Int): List<Employee>?
+
     @Query("SELECT NAME FROM COMPANY WHERE COMPANY.ID = :cId")
     suspend fun getCompanyName(cId: Int): String?
 

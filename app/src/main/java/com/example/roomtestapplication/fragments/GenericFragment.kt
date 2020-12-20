@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.roomtestapplication.R
-import com.example.roomtestapplication.adapter.GenericAdapter
+import com.example.roomtestapplication.adapter.GenericRecAdapter
 import com.example.roomtestapplication.databinding.FragmentHostBinding
 import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.models.GenericType
@@ -17,7 +17,7 @@ abstract class GenericFragment<T : GenericType> : Fragment() {
     protected var updatedId: Int = -1 //index if not updating
     protected val database by lazy { TaskDatabase.invoke(requireContext()) }
     protected val adapterGeneric by lazy {
-        GenericAdapter<T>(
+        GenericRecAdapter<T>(
             { remove(it) },
             { edit(it) }
         )
@@ -37,6 +37,13 @@ abstract class GenericFragment<T : GenericType> : Fragment() {
 
         initialize()
         observeData()
+    }
+
+    protected fun isUpdating(): Boolean = updatedId != -1
+
+    protected fun setAddingMode() {
+        updatedId = -1
+        binding.btnAdd.text = "Add"
     }
 
     protected abstract fun initialize()

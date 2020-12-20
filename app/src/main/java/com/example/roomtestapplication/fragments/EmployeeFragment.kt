@@ -49,7 +49,7 @@ class EmployeeFragment : GenericFragment<Employee>() {
             Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
             return
         }
-        if (updatedId != -1) update(Employee(name, companyId).apply { this.id = updatedId })
+        if (isUpdating()) update(Employee(name, companyId).apply { this.id = updatedId })
         else add(Employee(name, companyId))
 
         binding.etCompanyId.text.clear()
@@ -72,6 +72,7 @@ class EmployeeFragment : GenericFragment<Employee>() {
         CoroutineScope(Dispatchers.IO).launch {
             database.getEmployeeDao().update(item)
         }
+        setAddingMode()
     }
 
     override fun remove(item: Employee) {

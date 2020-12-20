@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomtestapplication.models.GenericType
 
-class GenericAdapter<T : GenericType>(
+class GenericRecAdapter<T : GenericType>(
     private val remove: (T) -> Unit,
     private val edit: (T) -> Unit
 ) :

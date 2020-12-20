@@ -35,7 +35,7 @@ class CompanyFragment : GenericFragment<Company>() {
             Toast.makeText(requireContext(), "Company name missing", Toast.LENGTH_SHORT).show()
             return
         }
-        if (updatedId != -1) update(Company(name).apply { id = updatedId })
+        if (isUpdating()) update(Company(name).apply { id = updatedId })
         else add(Company(name))
 
         binding.etInput.text.clear()
@@ -57,6 +57,7 @@ class CompanyFragment : GenericFragment<Company>() {
         CoroutineScope(Dispatchers.IO).launch {
             database.getCompanyDao().update(item)
         }
+        setAddingMode()
     }
 
     override fun remove(item: Company) {

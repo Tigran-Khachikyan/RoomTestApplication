@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.example.roomtestapplication.databinding.ActivityMainBinding
-import com.example.roomtestapplication.fragments.SectionsPagerAdapter
+import com.example.roomtestapplication.adapter.SectionsPagerAdapter
 
 class MainActivity : AppCompatActivity() {
 

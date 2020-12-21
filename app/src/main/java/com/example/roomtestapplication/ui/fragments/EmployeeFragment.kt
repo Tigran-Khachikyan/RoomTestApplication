@@ -1,8 +1,9 @@
-package com.example.roomtestapplication.fragments
+package com.example.roomtestapplication.ui.fragments
 
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.example.roomtestapplication.R
 import com.example.roomtestapplication.models.Employee
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,16 +16,6 @@ class EmployeeFragment : GenericFragment<Employee>() {
     override fun initialize() {
         binding.etCompanyId.visibility = View.VISIBLE
         binding.etDepId.visibility = View.VISIBLE
-        binding.etInput.hint = "Insert Employee"
-        binding.etCompanyId.hint = "Insert company Id"
-        binding.etDepId.hint = "Insert department Id"
-        binding.btnAdd.text = "add"
-        binding.btnAdd.setOnClickListener { confirmChanges() }
-
-        binding.recycler.apply {
-            setHasFixedSize(true)
-            this.adapter = adapterGeneric
-        }
     }
 
     override fun edit(item: Employee) {
@@ -32,7 +23,7 @@ class EmployeeFragment : GenericFragment<Employee>() {
         binding.etCompanyId.setText(item.cId.toString())
         binding.etDepId.setText(item.dId.toString())
         updatedId = item.id
-        binding.btnAdd.text = "Update"
+        binding.btnAdd.text = getString(R.string.update)
     }
 
     override fun confirmChanges() {

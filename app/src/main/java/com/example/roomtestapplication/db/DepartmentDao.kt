@@ -2,7 +2,6 @@ package com.example.roomtestapplication.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.roomtestapplication.models.Company
 import com.example.roomtestapplication.models.Department
 
 @Dao

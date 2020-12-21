@@ -11,7 +11,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.EmployeeFragment">
+        tools:context=".ui.fragments.EmployeeFragment"
+        tools:ignore="Autofill,LabelFor">
 
 
         <EditText
@@ -23,7 +24,9 @@
             android:textColor="@android:color/black"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="text"
+            tools:ignore="Autofill,LabelFor" />
 
         <EditText
             android:id="@+id/et_dep_Id"
@@ -56,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_margin="8dp"
-            android:text="ADD"
+            android:text="@string/add"
             app:layout_constraintTop_toBottomOf="@id/et_company_id" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

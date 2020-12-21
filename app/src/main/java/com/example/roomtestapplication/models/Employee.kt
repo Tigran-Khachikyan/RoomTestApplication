@@ -3,6 +3,7 @@ package com.example.roomtestapplication.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.*
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -12,16 +13,16 @@ import androidx.room.PrimaryKey
             entity = Company::class,
             parentColumns = ["ID"],
             childColumns = ["COMPANY_ID"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE,
+            onDelete = CASCADE,
+            onUpdate = CASCADE,
             deferred = false
         ),
         ForeignKey(
             entity = Department::class,
             parentColumns = ["ID"],
             childColumns = ["DEP_ID"],
-            onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE,
+            onDelete = RESTRICT,
+            onUpdate = CASCADE,
             deferred = false
         )
     ]

@@ -1,10 +1,11 @@
-package com.example.roomtestapplication
+package com.example.roomtestapplication.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import com.example.roomtestapplication.R
 import com.example.roomtestapplication.databinding.ActivityMainBinding
-import com.example.roomtestapplication.adapter.SectionsPagerAdapter
+import com.example.roomtestapplication.ui.adapter.SectionsPagerAdapter
 
 class MainActivity : AppCompatActivity() {
 

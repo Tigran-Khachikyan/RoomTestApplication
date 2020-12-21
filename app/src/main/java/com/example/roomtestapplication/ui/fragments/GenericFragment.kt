@@ -1,4 +1,4 @@
-package com.example.roomtestapplication.fragments
+package com.example.roomtestapplication.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.roomtestapplication.R
-import com.example.roomtestapplication.adapter.GenericRecAdapter
+import com.example.roomtestapplication.ui.adapter.GenericRecAdapter
 import com.example.roomtestapplication.databinding.FragmentHostBinding
 import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.models.Employee
@@ -39,19 +39,33 @@ abstract class GenericFragment<T : GenericType> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initialize()
-        observeData()
+        binding.etInput.hint = "Insert Employee"
+        binding.etCompanyId.hint = "Insert company Id"
+        binding.etDepId.hint = "Insert department Id"
+        binding.btnAdd.text = getString(R.string.add)
+        binding.btnAdd.setOnClickListener { confirmChanges() }
+        binding.recycler.apply {
+            setHasFixedSize(true)
+            this.adapter = adapterGeneric
+        }
         binding.swipeRefresh.setOnRefreshListener {
             adapterGeneric.notifyDataSetChanged()
             binding.swipeRefresh.isRefreshing = false
         }
+        initialize()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        observeData()
     }
 
     protected fun isUpdating(): Boolean = updatedId != -1
 
     protected fun setAddingMode() {
         updatedId = -1
-        binding.btnAdd.text = "Add"
+        binding.btnAdd.text = getString(R.string.add)
     }
 
     private fun showEmployees(employees: List<Employee>?) {

@@ -39,7 +39,6 @@ abstract class GenericFragment<T : GenericType> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.etInput.hint = "Insert Employee"
         binding.etCompanyId.hint = "Insert company Id"
         binding.etDepId.hint = "Insert department Id"
         binding.btnAdd.text = getString(R.string.add)

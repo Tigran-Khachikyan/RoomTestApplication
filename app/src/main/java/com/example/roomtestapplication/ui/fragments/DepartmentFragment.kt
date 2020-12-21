@@ -1,9 +1,9 @@
-package com.example.roomtestapplication.fragments
+package com.example.roomtestapplication.ui.fragments
 
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import com.example.roomtestapplication.models.Company
+import com.example.roomtestapplication.R
 import com.example.roomtestapplication.models.Department
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,21 +14,13 @@ class DepartmentFragment : GenericFragment<Department>() {
     override fun initialize() {
         binding.etCompanyId.visibility = View.GONE
         binding.etDepId.visibility = View.GONE
-        binding.etInput.hint = "Insert department"
-        binding.btnAdd.text = "add"
-        binding.btnAdd.setOnClickListener { confirmChanges() }
-
-        binding.recycler.apply {
-            setHasFixedSize(true)
-            this.adapter = adapterGeneric
-        }
     }
 
     override fun edit(item: Department) {
         binding.etInput.setText(item.name)
         binding.etCompanyId.visibility = View.GONE
         updatedId = item.id
-        binding.btnAdd.text = "Update"
+        binding.btnAdd.text = getString(R.string.update)
     }
 
     override fun confirmChanges() {

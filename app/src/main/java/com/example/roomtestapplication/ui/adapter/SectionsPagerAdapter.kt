@@ -1,11 +1,11 @@
-package com.example.roomtestapplication.adapter
+package com.example.roomtestapplication.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.roomtestapplication.fragments.CompanyFragment
-import com.example.roomtestapplication.fragments.DepartmentFragment
-import com.example.roomtestapplication.fragments.EmployeeFragment
+import com.example.roomtestapplication.ui.fragments.CompanyFragment
+import com.example.roomtestapplication.ui.fragments.DepartmentFragment
+import com.example.roomtestapplication.ui.fragments.EmployeeFragment
 
 
 class SectionsPagerAdapter(fm: FragmentManager) :

@@ -1,4 +1,4 @@
-package com.example.roomtestapplication.adapter
+package com.example.roomtestapplication.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

@@ -3,6 +3,7 @@ package com.example.roomtestapplication.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.roomtestapplication.models.Department
+import com.example.roomtestapplication.models.DepartmentWithEmployees
 
 @Dao
 interface DepartmentDao {
@@ -10,8 +11,9 @@ interface DepartmentDao {
     @Query("SELECT * FROM DEPARTMENT")
     fun getAll(): LiveData<List<Department>?>
 
-    @Query("SELECT * FROM DEPARTMENT WHERE ID =:id")
-    fun getById(id: Int): LiveData<Department?>
+    @Transaction
+    @Query("SELECT * FROM DEPARTMENT")
+    fun getDepartmentsWithEmployees(): LiveData<List<DepartmentWithEmployees>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(dep: Department)

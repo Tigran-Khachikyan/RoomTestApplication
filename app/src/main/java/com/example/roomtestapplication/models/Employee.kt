@@ -21,7 +21,7 @@ import androidx.room.PrimaryKey
             entity = Department::class,
             parentColumns = ["ID"],
             childColumns = ["DEP_ID"],
-            onDelete = RESTRICT,
+            onDelete = SET_DEFAULT,
             onUpdate = CASCADE,
             deferred = false
         )
@@ -33,7 +33,7 @@ data class Employee(
     val fullName: String,
     @ColumnInfo(name = "COMPANY_ID")
     val cId: Int,
-    @ColumnInfo(name = "DEP_ID")
+    @ColumnInfo(name = "DEP_ID", defaultValue = "1")
     val dId: Int
 ) : GenericType {
     @PrimaryKey(autoGenerate = true)
@@ -45,7 +45,7 @@ data class Employee(
 // onDelete = ForeignKey.NO_ACTION, + rejecting  -  FOREIGN KEY constraint failed (code 787 SQLITE_CONSTRAINT_FOREIGNKEY[787])
 // onDelete = ForeignKey.RESTRICT, + rejecting  - FOREIGN KEY constraint failed (code 1811 SQLITE_CONSTRAINT_TRIGGER[1811])
 // onDelete = ForeignKey.SET_NULL, + worked with Int?
-// onDelete = ForeignKey.SET_DEFAULT, - not worked without Int? (only set to null) - EMPLOYEE.COMPANY_ID (code 1299 SQLITE_CONSTRAINT_NOTNULL[1299])
+// onDelete = ForeignKey.SET_DEFAULT, worked with  @ColumnInfo(name = "DEP_ID", defaultValue = "1")
 
 // onUpdate = ForeignKey.CASCADE,  +
 // onUpdate = ForeignKey.NO_ACTION, -

@@ -14,6 +14,7 @@ class DepartmentFragment : GenericFragment<Department>() {
     override fun initialize() {
         binding.etCompanyId.visibility = View.GONE
         binding.etDepId.visibility = View.GONE
+        binding.etInput.hint = "Insert Department"
     }
 
     override fun edit(item: Department) {

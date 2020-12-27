@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.models.Employee
-import com.example.roomtestapplication.models.EmployeeDetails
+import com.example.roomtestapplication.ui.models.EmployeeDetails
 
 class EmployeeRepository(val db: TaskDatabase) : Repository<Employee, EmployeeDetails> {
 

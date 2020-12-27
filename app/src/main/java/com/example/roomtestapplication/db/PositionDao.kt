@@ -3,7 +3,7 @@ package com.example.roomtestapplication.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.roomtestapplication.models.Position
-import com.example.roomtestapplication.models.PositionDetails
+import com.example.roomtestapplication.ui.models.PositionDetails
 
 @Dao
 interface PositionDao {

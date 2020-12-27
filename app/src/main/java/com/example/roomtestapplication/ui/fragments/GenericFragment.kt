@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -13,13 +14,14 @@ import com.example.roomtestapplication.databinding.FragmentHostBinding
 import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.repositories.Repository
 import com.example.roomtestapplication.ui.MainActivity
-import com.example.roomtestapplication.ui.adapter.RecyclerHolder
 import com.example.roomtestapplication.ui.adapter.RecyclerAdapter
+import com.example.roomtestapplication.ui.adapter.RecyclerHolder
 import com.example.roomtestapplication.ui.viewmodels.GenericViewModel
 import com.example.roomtestapplication.ui.viewmodels.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 abstract class GenericFragment<T, K> : Fragment() {
 
@@ -85,7 +87,10 @@ abstract class GenericFragment<T, K> : Fragment() {
     }
 
     protected fun showSnackBar(text: String) {
-        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
+        val snackbar = Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
+        val textView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.maxLines = 20
+        snackbar.show()
     }
 
 }

@@ -10,10 +10,11 @@ import com.example.roomtestapplication.models.Employee
 import com.example.roomtestapplication.models.Position
 import com.example.roomtestapplication.models.typeconverters.DateConverter
 import com.example.roomtestapplication.repositories.Repository
+import com.example.roomtestapplication.ui.models.CompanyDepartmentJunction
 
 
 @androidx.room.Database(
-    entities = [Company::class, Department::class, Employee::class, Position::class],
+    entities = [Company::class, Department::class, Employee::class, Position::class, CompanyDepartmentJunction::class],
     version = 2
 )
 @TypeConverters(DateConverter::class)

@@ -7,21 +7,18 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import com.example.roomtestapplication.R
 
-data class SpinnerHolder(
-    val entityId: Int,
-    val title: String
-)
 
 fun Spinner.initialize(
     context: Context,
-    data: List<SpinnerHolder>?,
+    data: Map<Int, String>?,
     startPos: Int,
     onItemSelected: ((Int) -> Unit)? = null  // position
 ) {
+
     this.adapter = ArrayAdapter(
         context,
         R.layout.support_simple_spinner_dropdown_item,
-        data?.map { it.title } ?: mutableListOf()
+        data?.values?.toList() ?: mutableListOf()
     )
     this.setSelection(startPos)
 
@@ -32,8 +29,7 @@ fun Spinner.initialize(
             }
         }
 
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-            TODO("Not yet implemented")
-        }
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
     }
 }
+

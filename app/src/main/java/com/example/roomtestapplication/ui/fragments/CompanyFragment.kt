@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.example.roomtestapplication.R
 import com.example.roomtestapplication.databinding.BottomSheetCompanyBinding
 import com.example.roomtestapplication.databinding.HolderCompanyBinding
@@ -12,13 +13,18 @@ import com.example.roomtestapplication.models.typeconverters.DateConverter
 import com.example.roomtestapplication.repositories.CompanyRepository
 import com.example.roomtestapplication.repositories.Repository
 import com.example.roomtestapplication.ui.adapter.RecyclerHolder
+import com.example.roomtestapplication.ui.models.CompanyDetails
+import com.example.roomtestapplication.ui.models.DepartmentDetails
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class CompanyFragment : GenericFragment<Company, Company>() {
 
     override val repository: Repository<Company, Company>
-        get() =  CompanyRepository(database)
+        get() = CompanyRepository(database)
 
     override fun showBottomSheetDialog(editableItem: Company?) {
 
@@ -81,9 +87,29 @@ class CompanyFragment : GenericFragment<Company, Company>() {
 
 
     override fun showAdditionalInfo(item: Company) {
-        /* val companies : List<String>
-         val companies : List<String>
-         val companies : List<String>*/
+        lifecycleScope.launch(Dispatchers.IO) {
+            val detail = repository.getDetails(item.id)
+            if (detail != null && detail is CompanyDetails)
+                withContext(Dispatchers.Main) {
+                    val builder = StringBuilder()
+                    builder.append("DEPARTMENTS:")
+                    builder.append("\n")
+
+                    detail.departments?.forEach {
+                        builder.append(it.name)
+                        builder.append("\n")
+                    }
+                        builder.append("EMPLOYEES:")
+                           builder.append("\n")
+
+                        detail.employees?.forEach {
+                            builder.append(it.name)
+                            if (it.remote) builder.append(" - Remote")
+                            builder.append("\n")
+                        }
+                    showSnackBar(builder.toString())
+                }
+        }
     }
 
     override fun createRecyclerHolder(parent: ViewGroup): RecyclerHolder<Company> {

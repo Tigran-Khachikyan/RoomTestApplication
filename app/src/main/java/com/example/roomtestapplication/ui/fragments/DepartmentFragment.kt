@@ -8,13 +8,14 @@ import com.example.roomtestapplication.databinding.BottomSheetDepBinding
 import com.example.roomtestapplication.databinding.HolderDepBinding
 import com.example.roomtestapplication.models.Department
 import com.example.roomtestapplication.ui.adapter.RecyclerHolder
-import com.example.roomtestapplication.models.DepartmentDetails
+import com.example.roomtestapplication.ui.models.DepartmentDetails
 import com.example.roomtestapplication.repositories.DepartmentRepository
 import com.example.roomtestapplication.repositories.Repository
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.StringBuilder
 
 
 class DepartmentFragment : GenericFragment<Department, Department>() {
@@ -54,7 +55,13 @@ class DepartmentFragment : GenericFragment<Department, Department>() {
             val detail = repository.getDetails(item.id)
             if (detail != null && detail is DepartmentDetails)
                 withContext(Dispatchers.Main) {
-                    showSnackBar(detail.toString())
+              /*      val builder = StringBuilder()
+                    detail.positions?.forEach {
+                        builder.append(it.title)
+                        if (it.remote) builder.append(" - Remote ")
+                        builder.append("\n")
+                    }
+                    showSnackBar(builder.toString())*/
                 }
         }
     }

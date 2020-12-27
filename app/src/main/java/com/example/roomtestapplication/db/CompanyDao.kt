@@ -3,6 +3,7 @@ package com.example.roomtestapplication.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.roomtestapplication.models.Company
+import com.example.roomtestapplication.ui.models.CompanyDetails
 
 @Dao
 interface CompanyDao {
@@ -13,8 +14,9 @@ interface CompanyDao {
     @Query("SELECT * FROM COMPANY")
     fun getAll(): List<Company>?
 
+    @Transaction
     @Query("SELECT * FROM COMPANY WHERE COM_ID =:id")
-    fun getDetails(id: Int): Company?
+    fun getDetails(id: Int): CompanyDetails?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(company: Company)

@@ -3,7 +3,7 @@ package com.example.roomtestapplication.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.roomtestapplication.models.Department
-import com.example.roomtestapplication.models.DepartmentDetails
+import com.example.roomtestapplication.ui.models.DepartmentDetails
 
 @Dao
 interface DepartmentDao {

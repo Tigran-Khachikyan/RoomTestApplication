@@ -2,8 +2,6 @@ package com.example.roomtestapplication.ui.fragments
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.example.roomtestapplication.R
@@ -14,9 +12,8 @@ import com.example.roomtestapplication.models.Position
 import com.example.roomtestapplication.repositories.DepartmentRepository
 import com.example.roomtestapplication.repositories.PositionRepository
 import com.example.roomtestapplication.ui.adapter.RecyclerHolder
-import com.example.roomtestapplication.models.PositionDetails
+import com.example.roomtestapplication.ui.models.PositionDetails
 import com.example.roomtestapplication.repositories.Repository
-import com.example.roomtestapplication.ui.SpinnerHolder
 import com.example.roomtestapplication.ui.initialize
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
@@ -53,13 +50,11 @@ class PositionFragment : GenericFragment<Position, PositionDetails>() {
                 val pos = editableItem?.run { departments?.map { it.name }?.indexOf(depName) } ?: 0
                 bsd.spinnerDepartment.initialize(
                     requireContext(),
-                    departments?.map { SpinnerHolder(it.id, it.name) },
+                    departments?.map { it.id to it.name }?.toMap(),
                     pos
                 )
             }
         }
-
-
 
 
         bsd.btnSave.setOnClickListener {

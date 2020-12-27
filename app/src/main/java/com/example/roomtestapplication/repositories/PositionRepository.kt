@@ -3,7 +3,7 @@ package com.example.roomtestapplication.repositories
 import androidx.lifecycle.LiveData
 import com.example.roomtestapplication.db.TaskDatabase
 import com.example.roomtestapplication.models.Position
-import com.example.roomtestapplication.models.PositionDetails
+import com.example.roomtestapplication.ui.models.PositionDetails
 
 class PositionRepository(val db: TaskDatabase) : Repository<Position, PositionDetails> {
 

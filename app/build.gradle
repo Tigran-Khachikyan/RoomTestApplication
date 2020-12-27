@@ -67,4 +67,5 @@ dependencies {
     // for viewmodels init
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
+
 }

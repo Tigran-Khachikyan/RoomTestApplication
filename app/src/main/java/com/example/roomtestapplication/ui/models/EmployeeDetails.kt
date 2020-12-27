@@ -1,7 +1,9 @@
-package com.example.roomtestapplication.models
+package com.example.roomtestapplication.ui.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
+import com.example.roomtestapplication.models.Employee
+import com.example.roomtestapplication.models.Position
 
 data class EmployeeDetails(
 

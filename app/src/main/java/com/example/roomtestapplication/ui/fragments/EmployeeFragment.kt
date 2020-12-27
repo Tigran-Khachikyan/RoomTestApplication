@@ -11,8 +11,8 @@ import com.example.roomtestapplication.models.*
 import com.example.roomtestapplication.repositories.*
 
 import com.example.roomtestapplication.ui.adapter.RecyclerHolder
-import com.example.roomtestapplication.ui.SpinnerHolder
 import com.example.roomtestapplication.ui.initialize
+import com.example.roomtestapplication.ui.models.EmployeeDetails
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,7 +61,7 @@ class EmployeeFragment : GenericFragment<Employee, EmployeeDetails>() {
                     editableItem?.run { positions?.map { it.title }?.indexOf(position.title) } ?: 0
                 bsd.spinnerPosition.initialize(
                     requireContext(),
-                    positions?.map { SpinnerHolder(it.id, it.title) },
+                    positions?.map { it.id to it.title }?.toMap(),
                     pos
                 ) {
                     val remoteIsSupported = positions?.get(it)?.remote
@@ -79,7 +79,7 @@ class EmployeeFragment : GenericFragment<Employee, EmployeeDetails>() {
                 val pos = editableItem?.run { companies?.map { it.name }?.indexOf(comName) } ?: 0
                 bsd.spinnerCompany.initialize(
                     requireContext(),
-                    companies?.map { SpinnerHolder(it.id, it.name) },
+                    companies?.map { it.id to it.name }?.toMap(),
                     pos
                 )
             }

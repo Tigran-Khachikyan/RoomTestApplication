@@ -1,4 +1,4 @@
-package com.example.roomtestapplication.models
+package com.example.roomtestapplication.ui.models
 
 import androidx.room.Embedded
 import androidx.room.Relation
@@ -11,10 +11,12 @@ data class DepartmentDetails(
     val department: Department,
 
     //One-to-many relations
-    @Relation(
+    // Android developer
+    // HR Manager
+ /*   @Relation(
         parentColumn = "DEP_ID",
         entityColumn = "POS_DEP_ID",
         entity = Position::class
     )
-    val positions: List<Position>?
+    val positions: List<Position>?*/
 )

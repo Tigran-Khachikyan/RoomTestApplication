@@ -1,69 +1,88 @@
 package com.example.roomtestapplication.ui.fragments
 
-import android.util.Log
-import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.example.roomtestapplication.R
+import com.example.roomtestapplication.databinding.BottomSheetDepBinding
+import com.example.roomtestapplication.databinding.HolderDepBinding
 import com.example.roomtestapplication.models.Department
-import kotlinx.coroutines.CoroutineScope
+import com.example.roomtestapplication.ui.adapter.RecyclerHolder
+import com.example.roomtestapplication.models.DepartmentDetails
+import com.example.roomtestapplication.repositories.DepartmentRepository
+import com.example.roomtestapplication.repositories.Repository
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class DepartmentFragment : GenericFragment<Department>() {
 
-    override fun initialize() {
-        binding.etCompanyId.visibility = View.GONE
-        binding.etDepId.visibility = View.GONE
-        binding.etInput.hint = "Insert Department"
-    }
+class DepartmentFragment : GenericFragment<Department, Department>() {
 
-    override fun edit(item: Department) {
-        binding.etInput.setText(item.name)
-        binding.etCompanyId.visibility = View.GONE
-        updatedId = item.id
-        binding.btnAdd.text = getString(R.string.update)
-    }
+    override val repository: Repository<Department, Department>
+        get() = DepartmentRepository(database)
 
-    override fun confirmChanges() {
-        val name = binding.etInput.text.toString()
-        if (name.trim().isEmpty()) {
-            Toast.makeText(requireContext(), "Department name missing", Toast.LENGTH_SHORT).show()
-            return
+    override fun showBottomSheetDialog(editableItem: Department?) {
+
+        val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_dep, null)
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(sheetView)
+        val bsd = BottomSheetDepBinding.bind(sheetView)
+
+        bsd.tvIntro.text = if (editableItem != null) "Edit department" else "Add department"
+        editableItem?.run { bsd.etName.setText(name) }
+        bsd.etName.addTextChangedListener {
+            if (bsd.tilName.isErrorEnabled)
+                bsd.tilName.isErrorEnabled = false
         }
-        if (isUpdating()) update(Department(name).apply { id = updatedId })
-        else add(Department(name))
-
-        binding.etInput.text.clear()
+        bsd.btnSave.setOnClickListener {
+            val text = bsd.etName.text?.toString()
+            if (text != null && text.isNotEmpty()) {
+                if (editableItem != null) update(Department(text).apply { id = editableItem.id })
+                else add(Department(text))
+                dialog.dismiss()
+            } else {
+                bsd.tilName.isErrorEnabled = true
+            }
+        }
+        dialog.show()
     }
 
-    override fun observeData() {
-        database.getDepartment().getAll().observe(viewLifecycleOwner, {
-            adapterGeneric.setData(it)
-        })
-    }
 
-    override fun add(item: Department) {
-        CoroutineScope(Dispatchers.IO).launch {
-            database.getDepartment().add(item)
+    override fun showAdditionalInfo(item: Department) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val detail = repository.getDetails(item.id)
+            if (detail != null && detail is DepartmentDetails)
+                withContext(Dispatchers.Main) {
+                    showSnackBar(detail.toString())
+                }
         }
     }
 
-    override fun update(item: Department) {
-        CoroutineScope(Dispatchers.IO).launch {
-            database.getDepartment().update(item)
-        }
-        setAddingMode()
-    }
 
-    override fun remove(item: Department) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                database.getDepartment().remove(item)
-            } catch (ex: Exception) {
-                Log.d("yayyyys55", "Department removing exception: " + ex.message)
+    override fun createRecyclerHolder(parent: ViewGroup): RecyclerHolder<Department> {
+        return object : RecyclerHolder<Department>(parent, R.layout.holder_dep) {
+
+            private val binding = HolderDepBinding.bind(this.itemView)
+            override fun bind(model: Department) {
+
+                binding.tvId.text = model.id.toString()
+                binding.tvName.text = model.name
+
+                binding.root.setOnClickListener {
+                    val item = adapterRec.data?.get(layoutPosition)
+                    item?.let { showAdditionalInfo(it) }
+                }
+                binding.root.setOnLongClickListener {
+                    val item = adapterRec.data?.get(layoutPosition)
+                    item?.let { showBottomSheetDialog(it) }
+                    true
+                }
+                binding.icTrash.setOnClickListener {
+                    val item = adapterRec.data?.get(layoutPosition)
+                    item?.let { remove(it) }
+                }
             }
         }
     }
-
-
 }

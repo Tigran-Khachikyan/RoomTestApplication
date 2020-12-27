@@ -1,95 +1,195 @@
 package com.example.roomtestapplication.ui.fragments
 
-import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import com.example.roomtestapplication.R
-import com.example.roomtestapplication.models.Employee
-import kotlinx.coroutines.CoroutineScope
+import com.example.roomtestapplication.databinding.BottomSheetEmployeeBinding
+import com.example.roomtestapplication.databinding.HolderEmployeeBinding
+import com.example.roomtestapplication.models.*
+import com.example.roomtestapplication.repositories.*
+
+import com.example.roomtestapplication.ui.adapter.RecyclerHolder
+import com.example.roomtestapplication.ui.SpinnerHolder
+import com.example.roomtestapplication.ui.initialize
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 
-class EmployeeFragment : GenericFragment<Employee>() {
+class EmployeeFragment : GenericFragment<Employee, EmployeeDetails>() {
 
+    override val repository: Repository<Employee, EmployeeDetails>
+        get() = EmployeeRepository(database)
 
-    override fun initialize() {
-        binding.etCompanyId.visibility = View.VISIBLE
-        binding.etDepId.visibility = View.VISIBLE
-        binding.etInput.hint = "Insert Employee"
-    }
+    override fun showBottomSheetDialog(editableItem: EmployeeDetails?) {
+        val sheetView = layoutInflater.inflate(R.layout.bottom_sheet_employee, null)
+        val dialog = BottomSheetDialog(requireContext())
+        dialog.setContentView(sheetView)
+        val bsd = BottomSheetEmployeeBinding.bind(sheetView)
 
-    override fun edit(item: Employee) {
-        binding.etInput.setText(item.fullName)
-        binding.etCompanyId.setText(item.cId.toString())
-        binding.etDepId.setText(item.dId.toString())
-        updatedId = item.id
-        binding.btnAdd.text = getString(R.string.update)
-    }
-
-    override fun confirmChanges() {
-        val name = binding.etInput.text.toString()
-        val cId = binding.etCompanyId.text.toString()
-        val dId = binding.etDepId.text.toString()
-        if (name.trim().isEmpty()) {
-            Toast.makeText(requireContext(), "No name", Toast.LENGTH_SHORT).show()
-            return
+        bsd.tvIntro.text = if (editableItem != null) "Edit employee" else "Add employee"
+        editableItem?.run {
+            bsd.etName.setText(employee.name)
+            bsd.etExperience.setText(employee.experience.toString())
+            bsd.checkboxRemote.isChecked = employee.remote
+            bsd.etSalary.setText(employee.salary.toString())
         }
-        if (cId.trim().isEmpty()) {
-            Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
-            return
+        bsd.etName.addTextChangedListener {
+            if (bsd.tilFullName.isErrorEnabled)
+                bsd.tilFullName.isErrorEnabled = false
         }
-        if (dId.trim().isEmpty()) {
-            Toast.makeText(requireContext(), "wrong dep Id", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val companyId = try {
-            cId.toInt()
-        } catch (ex: Exception) {
-            Toast.makeText(requireContext(), "wrong company Id", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val depId = try {
-            dId.toInt()
-        } catch (ex: Exception) {
-            Toast.makeText(requireContext(), "wrong dep Id", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (isUpdating()) update(Employee(name, companyId, depId).apply { this.id = updatedId })
-        else add(Employee(name, companyId, depId))
 
-        binding.etCompanyId.text.clear()
-        binding.etDepId.text.clear()
-        binding.etInput.text.clear()
-    }
-
-    override fun observeData() {
-        database.getEmployeeDao().getAll().observe(viewLifecycleOwner) {
-            adapterGeneric.setData(it)
+        bsd.etExperience.addTextChangedListener {
+            if (bsd.tilExperience.isErrorEnabled)
+                bsd.tilExperience.isErrorEnabled = false
         }
-    }
 
-    override fun add(item: Employee) {
-        CoroutineScope(Dispatchers.IO).launch {
-            database.getEmployeeDao().add(item)
+        bsd.etSalary.addTextChangedListener {
+            if (bsd.tilSalary.isErrorEnabled)
+                bsd.tilSalary.isErrorEnabled = false
         }
-    }
 
-    override fun update(item: Employee) {
-        CoroutineScope(Dispatchers.IO).launch {
-            database.getEmployeeDao().update(item)
+        var positions: List<Position>? = null
+        lifecycleScope.launch(Dispatchers.IO) {
+            positions = PositionRepository(database).getAll()?.map { it.position }
+            withContext(Dispatchers.Main) {
+                val pos =
+                    editableItem?.run { positions?.map { it.title }?.indexOf(position.title) } ?: 0
+                bsd.spinnerPosition.initialize(
+                    requireContext(),
+                    positions?.map { SpinnerHolder(it.id, it.title) },
+                    pos
+                ) {
+                    val remoteIsSupported = positions?.get(it)?.remote
+                    bsd.checkboxRemote.visibility =
+                        if (remoteIsSupported != null && remoteIsSupported) View.VISIBLE
+                        else View.GONE
+                }
+            }
         }
-        setAddingMode()
-    }
 
-    override fun remove(item: Employee) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                database.getEmployeeDao().remove(item)
+        var companies: List<Company>? = null
+        lifecycleScope.launch(Dispatchers.IO) {
+            companies = CompanyRepository(database).getAll()
+            withContext(Dispatchers.Main) {
+                val pos = editableItem?.run { companies?.map { it.name }?.indexOf(comName) } ?: 0
+                bsd.spinnerCompany.initialize(
+                    requireContext(),
+                    companies?.map { SpinnerHolder(it.id, it.name) },
+                    pos
+                )
+            }
+        }
+
+        bsd.btnSave.setOnClickListener {
+
+            val nameInput = bsd.etName.text?.toString()
+            val expInput = bsd.etExperience.text?.toString()
+            val salInput = bsd.etSalary.text?.toString()
+            if (nameInput == null || nameInput.isEmpty()) {
+                bsd.tilFullName.isErrorEnabled = true
+                return@setOnClickListener
+            }
+            if (expInput == null || expInput.isEmpty()) {
+                bsd.tilExperience.isErrorEnabled = true
+                return@setOnClickListener
+            }
+            if (salInput == null || salInput.isEmpty()) {
+                bsd.tilSalary.isErrorEnabled = true
+                return@setOnClickListener
+            }
+
+            val experienceInput = try {
+                expInput.toFloat()
             } catch (ex: Exception) {
-                Log.d("yayyyys55", "Employee removing exception: " + ex.message)
+                return@setOnClickListener
+            }
+
+            val salaryInput = try {
+                salInput.toInt()
+            } catch (ex: Exception) {
+                return@setOnClickListener
+            }
+
+            val remote =
+                bsd.checkboxRemote.visibility == View.VISIBLE && bsd.checkboxRemote.isChecked
+            if (positions != null && companies != null) {
+
+                editableItem?.run {
+                    update(
+                        Employee(
+                            nameInput,
+                            experienceInput,
+                            salaryInput,
+                            remote,
+                            positions!![bsd.spinnerPosition.selectedItemPosition].id,
+                            companies!![bsd.spinnerCompany.selectedItemPosition].id,
+                        ).apply { id = employee.id }
+                    )
+                }
+                editableItem ?: run {
+                    add(
+                        Employee(
+                            nameInput,
+                            experienceInput,
+                            salaryInput,
+                            remote,
+                            positions!![bsd.spinnerPosition.selectedItemPosition].id,
+                            companies!![bsd.spinnerCompany.selectedItemPosition].id,
+                        )
+                    )
+                }
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    override fun showAdditionalInfo(item: EmployeeDetails) {
+/*        lifecycleScope.launch(Dispatchers.IO) {
+            val detail = repository.getDetails(item.id)
+            if (detail != null && detail is DepartmentDetails)
+                withContext(Dispatchers.Main) {
+                    showSnackBar(detail.toString())
+                }
+        }*/
+    }
+
+    override fun createRecyclerHolder(parent: ViewGroup): RecyclerHolder<EmployeeDetails> {
+        return object : RecyclerHolder<EmployeeDetails>(parent, R.layout.holder_employee) {
+
+            private val binding = HolderEmployeeBinding.bind(this.itemView)
+            override fun bind(model: EmployeeDetails) {
+
+                binding.tvId.text = model.employee.id.toString()
+                binding.tvFullName.text = model.employee.name
+                val experience = "Experience - " + model.employee.experience + " years"
+                binding.tvExperience.text = experience
+                val posDep = model.position.title + " in " + model.depName + " department"
+                binding.tvPositionInDep.text = posDep
+                binding.tvRemote.visibility = if (model.employee.remote) View.VISIBLE else View.GONE
+                val salary = "Salary - ${model.employee.salary} EUR"
+                binding.tvSalary.text = salary
+                binding.tvCompany.text = model.comName
+
+                binding.root.setOnClickListener {
+                    val item = adapterRec.data?.get(layoutPosition)
+                    item?.let { showAdditionalInfo(it) }
+                }
+                binding.root.setOnLongClickListener {
+                    val item = adapterRec.data?.get(layoutPosition)
+                    item?.let { showBottomSheetDialog(it) }
+                    true
+                }
+                binding.icTrash.setOnClickListener {
+                    val item = adapterRec.data?.get(layoutPosition)
+                    item?.let { remove(it.employee) }
+                }
             }
         }
     }
-
 }

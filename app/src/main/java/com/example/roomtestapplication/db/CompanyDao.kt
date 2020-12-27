@@ -8,10 +8,13 @@ import com.example.roomtestapplication.models.Company
 interface CompanyDao {
 
     @Query("SELECT * FROM COMPANY")
-    fun getAll(): LiveData<List<Company>?>
+    fun getObservable(): LiveData<List<Company>?>
 
-    @Query("SELECT * FROM COMPANY WHERE ID =:id")
-    fun getById(id: Int): LiveData<Company?>
+    @Query("SELECT * FROM COMPANY")
+    fun getAll(): List<Company>?
+
+    @Query("SELECT * FROM COMPANY WHERE COM_ID =:id")
+    fun getDetails(id: Int): Company?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(company: Company)
@@ -19,7 +22,7 @@ interface CompanyDao {
     @Update
     suspend fun update(company: Company)
 
-    @Query("DELETE FROM COMPANY WHERE ID =:id")
+    @Query("DELETE FROM COMPANY WHERE COM_ID =:id")
     suspend fun remove(id: Int)
 
     @Delete

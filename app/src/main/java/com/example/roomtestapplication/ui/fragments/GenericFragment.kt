@@ -1,30 +1,38 @@
 package com.example.roomtestapplication.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.roomtestapplication.R
-import com.example.roomtestapplication.ui.adapter.GenericRecAdapter
 import com.example.roomtestapplication.databinding.FragmentHostBinding
 import com.example.roomtestapplication.db.TaskDatabase
-import com.example.roomtestapplication.models.Employee
-import com.example.roomtestapplication.models.GenericType
-import java.lang.StringBuilder
+import com.example.roomtestapplication.repositories.Repository
+import com.example.roomtestapplication.ui.MainActivity
+import com.example.roomtestapplication.ui.adapter.RecyclerHolder
+import com.example.roomtestapplication.ui.adapter.RecyclerAdapter
+import com.example.roomtestapplication.ui.viewmodels.GenericViewModel
+import com.example.roomtestapplication.ui.viewmodels.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-abstract class GenericFragment<T : GenericType> : Fragment() {
+abstract class GenericFragment<T, K> : Fragment() {
 
-    protected lateinit var binding: FragmentHostBinding
-    protected var updatedId: Int = -1 //index if not updating
-    protected val database by lazy { TaskDatabase.invoke(requireContext()) }
-    protected val adapterGeneric by lazy {
-        GenericRecAdapter<T>(
-            { remove(it) },
-            { edit(it) },
-            { showEmployees(it) }
-        )
+    private lateinit var binding: FragmentHostBinding
+    protected val adapterRec by lazy { RecyclerAdapter { createRecyclerHolder(it) } }
+    private val viewModel by viewModels<GenericViewModel<T, K>> { ViewModelFactory(repository) }
+    protected abstract val repository: Repository<T, K>
+    protected lateinit var database: TaskDatabase
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        database = (context as MainActivity).database
     }
 
     override fun onCreateView(
@@ -39,56 +47,46 @@ abstract class GenericFragment<T : GenericType> : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.etCompanyId.hint = "Insert company Id"
-        binding.etDepId.hint = "Insert department Id"
-        binding.btnAdd.text = getString(R.string.add)
-        binding.btnAdd.setOnClickListener { confirmChanges() }
         binding.recycler.apply {
             setHasFixedSize(true)
-            this.adapter = adapterGeneric
+            this.adapter = adapterRec
         }
-        binding.swipeRefresh.setOnRefreshListener {
-            adapterGeneric.notifyDataSetChanged()
-            binding.swipeRefresh.isRefreshing = false
+        binding.fabAdd.setOnClickListener { showBottomSheetDialog() }
+
+        binding.swipeRefresh.setOnRefreshListener { viewModel.refresh() }
+
+        viewModel.data.observe(viewLifecycleOwner, {
+            adapterRec.updateData(it)
+            if (binding.swipeRefresh.isRefreshing)
+                binding.swipeRefresh.isRefreshing = false
+        })
+    }
+
+    protected abstract fun showBottomSheetDialog(editableItem: K? = null)
+    protected abstract fun showAdditionalInfo(item: K)
+    protected abstract fun createRecyclerHolder(parent: ViewGroup): RecyclerHolder<K>
+
+    protected fun remove(item: T) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.remove(item)
         }
-        initialize()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        observeData()
+    protected fun add(item: T) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.add(item)
+        }
     }
 
-    protected fun isUpdating(): Boolean = updatedId != -1
-
-    protected fun setAddingMode() {
-        updatedId = -1
-        binding.btnAdd.text = getString(R.string.add)
+    protected fun update(item: T) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            repository.update(item)
+        }
     }
 
-    private fun showEmployees(employees: List<Employee>?) {
-        var text = StringBuilder().apply {
-            employees?.forEach {
-                append(it.id)
-                append(" - ")
-                append(it.fullName)
-                append("\n")
-            }
-        }.toString()
-
-        if (text.isEmpty())
-            text = "No Employee found!"
-        Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
+    protected fun showSnackBar(text: String) {
+        Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
     }
-
-    protected abstract fun initialize()
-    protected abstract fun edit(item: T)
-    protected abstract fun confirmChanges()
-    protected abstract fun observeData()
-    protected abstract fun add(item: T)
-    protected abstract fun update(item: T)
-    protected abstract fun remove(item: T)
 
 }
 

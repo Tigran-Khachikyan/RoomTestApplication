@@ -6,10 +6,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "DEPARTMENT")
 data class Department(
-    @ColumnInfo(name = "NAME")
+
+    @ColumnInfo(name = "DEP_NAME")
     val name: String
-) : GenericType {
+) {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "ID")
+    @ColumnInfo(name = "DEP_ID")
     var id: Int = 0
 }

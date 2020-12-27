@@ -4,4 +4,16 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add">Add</string>
     <string name="update">Update</string>
+    <string name="save">Save</string>
+    <string name="full_name">Full Name</string>
+    <string name="experience">Experience</string>
+    <string name="title">Title</string>
+    <string name="remote">Remote</string>
+    <string name="name">Name</string>
+    <string name="founded">Founded :</string>
+    <string name="missing_input">Missing input</string>
+    <string name="click_on_item_to_see_additional_information">Click to see additional information!</string>
+    <string name="long_click_on_item_to_modify">Long click to modify the item</string>
+    <string name="remote_supported">Remote is supported</string>
+    <string name="salary">Salary</string>
 </resources>

@@ -3,21 +3,26 @@ package com.example.roomtestapplication.db
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.roomtestapplication.models.Company
 import com.example.roomtestapplication.models.Department
 import com.example.roomtestapplication.models.Employee
+import com.example.roomtestapplication.models.Position
+import com.example.roomtestapplication.models.typeconverters.DateConverter
+import com.example.roomtestapplication.repositories.Repository
 
 
 @androidx.room.Database(
-    entities = [Company::class, Department::class, Employee::class],
+    entities = [Company::class, Department::class, Employee::class, Position::class],
     version = 2
 )
+@TypeConverters(DateConverter::class)
 abstract class TaskDatabase : RoomDatabase() {
 
     abstract fun getCompanyDao(): CompanyDao
     abstract fun getEmployeeDao(): EmployeeDao
-    abstract fun getDepartment(): DepartmentDao
-
+    abstract fun getDepartmentDao(): DepartmentDao
+    abstract fun getPositionDao(): PositionDao
 
     companion object {
 

@@ -3,27 +3,20 @@ package com.example.roomtestapplication.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.roomtestapplication.models.Employee
+import com.example.roomtestapplication.models.EmployeeDetails
 
 @Dao
 interface EmployeeDao {
 
-    @Query("SELECT * FROM EMPLOYEE")
-    fun getAll(): LiveData<List<Employee>?>
 
-    @Query("SELECT * FROM EMPLOYEE WHERE ID =:id")
-    fun getById(id: Int): LiveData<Employee?>
+    @Query("SELECT EMPLOYEE.*, POSITION.*, DEP_NAME, COM_NAME FROM EMPLOYEE INNER JOIN POSITION ON EMP_POS_ID = POS_ID INNER JOIN DEPARTMENT ON POS_DEP_ID = DEP_ID INNER JOIN COMPANY ON EMP_COM_ID = COM_ID ORDER BY COM_NAME")
+    fun getObservable(): LiveData<List<EmployeeDetails>?>
 
-    @Query("SELECT * FROM EMPLOYEE WHERE COMPANY_ID =:companyId")
-    suspend fun getCompanyEmployees(companyId: Int): List<Employee>?
+    @Query("SELECT EMPLOYEE.*, POSITION.*, DEP_NAME, COM_NAME FROM EMPLOYEE INNER JOIN POSITION ON EMP_POS_ID = POS_ID INNER JOIN DEPARTMENT ON POS_DEP_ID = DEP_ID INNER JOIN COMPANY ON EMP_COM_ID = COM_ID ORDER BY COM_NAME")
+    fun getAll(): List<EmployeeDetails>?
 
-    @Query("SELECT * FROM EMPLOYEE WHERE DEP_ID =:depId")
-    suspend fun getDepartmentEmployees(depId: Int): List<Employee>?
-
-    @Query("SELECT NAME FROM COMPANY WHERE COMPANY.ID = :cId")
-    suspend fun getCompanyName(cId: Int): String?
-
-    @Query("SELECT NAME FROM DEPARTMENT WHERE DEPARTMENT.ID = :dId")
-    suspend fun getDepartmentName(dId: Int): String?
+    @Query("SELECT EMPLOYEE.*, POSITION.*, DEP_NAME, COM_NAME FROM EMPLOYEE INNER JOIN POSITION ON EMP_POS_ID = POS_ID INNER JOIN DEPARTMENT ON POS_DEP_ID = DEP_ID INNER JOIN COMPANY ON EMP_COM_ID = COM_ID WHERE EMPLOYEE.EMP_ID =:id")
+    suspend fun getDetails(id: Int): EmployeeDetails?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun add(employee: Employee)
@@ -31,7 +24,7 @@ interface EmployeeDao {
     @Update
     suspend fun update(employee: Employee)
 
-    @Query("DELETE FROM EMPLOYEE WHERE ID =:id")
+    @Query("DELETE FROM EMPLOYEE WHERE EMP_ID =:id")
     suspend fun remove(id: Int)
 
     @Delete
